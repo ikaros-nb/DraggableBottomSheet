@@ -12,14 +12,15 @@ struct ContentView: View {
     @State private var whiteContentHeight: CGFloat = 0
     
     var body: some View {
+        GeometryReader { geometry in
             ZStack(alignment: .top) {
                 topContent()
                 
                 VStack {
                     Spacer()
                     DraggableBottomSheet(
-                        minHeight: 350,
-                        maxHeight: 700
+                        minHeight: geometry.size.height - topContentHeight,
+                        maxHeight: geometry.size.height - whiteContentHeight
                     ) {
                         ScrollView {
                             LazyVStack(spacing: 0) {
@@ -35,17 +36,26 @@ struct ContentView: View {
                 }
             }
             .background(Color.gray.opacity(0.1))
-            .ignoresSafeArea(.all, edges: .bottom)
+        }
+        .ignoresSafeArea(.all, edges: .bottom)
     }
     
     private func topContent() -> some View {
         VStack(spacing: 0) {
             Color.white
                 .frame(height: 100)
+                .coordinateSpace(name: "whiteContent")
+                .readSize(in: "whiteContent") { height in
+                    whiteContentHeight = height
+                }
             Color.blue
                 .frame(height: 100)
             Color.red
                 .frame(height: 100)
+        }
+        .coordinateSpace(name: "topContent")
+        .readSize(in: "topContent") { height in
+            topContentHeight = height
         }
     }
 }
