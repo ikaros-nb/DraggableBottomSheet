@@ -33,7 +33,7 @@ struct DraggableBottomSheet<Content: View>: View {
             dragIndicator()
                 .background(backgroundColor)
                 .gesture(
-                    DragGesture()
+                    DragGesture(coordinateSpace: .global)
                         .onChanged { value in
                             // Store starting height on first drag frame
                             if dragStartHeight == 0 {
